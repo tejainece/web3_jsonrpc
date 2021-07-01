@@ -1,19 +1,17 @@
-A library for Dart developers.
+# web3_jsonrpc
 
-## Usage
+> TODO
 
-A simple usage example:
+# Install geth
 
 ```dart
-import 'package:web3_jsonrpc/web3_jsonrpc.dart';
-
-main() {
-  var awesome = new Awesome();
-}
+sudo add-apt-repository -y ppa:ethereum/ethereum
+sudo apt-get update
+sudo apt-get install ethereum
 ```
 
-## Features and bugs
+# Run geth testnet
 
-Please file feature requests and bugs at the [issue tracker][tracker].
-
-[tracker]: http://example.com/issues/replaceme
+```bash
+geth --http --rinkeby --syncmode light
+```
