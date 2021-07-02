@@ -4,16 +4,16 @@ import 'dart:io';
 import 'package:http/http.dart';
 import 'package:web3_jsonrpc/src/jsonrpc/models.dart';
 
-abstract class JRPC {
+abstract class JRPCClient {
   Future<JRPCResponse> callRPC(JRPCRequest req);
 }
 
-class JRPCHttp implements JRPC {
+class JRPCHttpClient implements JRPCClient {
   final Uri uri;
 
   late Client client;
 
-  JRPCHttp(this.uri, {Client? client}) {
+  JRPCHttpClient(this.uri, {Client? client}) {
     this.client = client ?? Client();
   }
 
