@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:http/http.dart';
 import 'package:web3_jsonrpc/src/jsonrpc/http.dart';
 import 'package:web3_jsonrpc/src/jsonrpc/models.dart';
+import 'package:web3_jsonrpc/src/web3/models/transaction.dart';
 
 import 'models/models.dart';
 
@@ -32,14 +35,46 @@ class Web3ETH {
     return BigInt.parse(resp.result as String);
   }
 
-  Future<Block> getBlockByNumber(BlockId blockId) async {
-    final params = <dynamic>[blockId.encodeString(), true];
-    final resp = await jrpc.callRPC(
-        JRPCRequest(id: jrpc.nextId, method: 'eth_getBlockByNumber', params: params));
+  Future<BlockId> getBlockNumber() async {
+    final resp = await jrpc
+        .callRPC(JRPCRequest(id: jrpc.nextId, method: 'eth_blockNumber'));
+    if (resp.error != null) {
+      throw resp.error!;
+    }
+    return BlockId(BigInt.parse(resp.result as String));
+  }
+
+  Future<Block> getBlockByHash(String blockHash) async {
+    final params = <dynamic>[blockHash, true];
+    final resp = await jrpc.callRPC(JRPCRequest(
+        id: jrpc.nextId, method: 'eth_getBlockByHash', params: params));
     if (resp.error != null) {
       throw resp.error!;
     }
     print(resp.result);
+    return Block.fromMap(resp.result as Map<String, dynamic>);
+  }
+
+  Future<Block> getBlockByNumber(BlockId blockId) async {
+    final params = <dynamic>[blockId.encodeString(), true];
+    final resp = await jrpc.callRPC(JRPCRequest(
+        id: jrpc.nextId, method: 'eth_getBlockByNumber', params: params));
+    if (resp.error != null) {
+      throw resp.error!;
+    }
+    print(resp.result);
+    return Block.fromMap(resp.result as Map<String, dynamic>);
+  }
+
+  Future<Transaction> getTransactionByHash(String hash) async {
+    final params = <dynamic>[hash];
+    final resp = await jrpc.callRPC(JRPCRequest(
+        id: jrpc.nextId, method: 'eth_getTransactionByHash', params: params));
+    if (resp.error != null) {
+      throw resp.error!;
+    }
+    print(resp.result);
+    return Transaction.fromMap(resp.result as Map<String, dynamic>);
   }
 }
 

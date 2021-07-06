@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 
+import 'package:web3_jsonrpc/src/web3/models/transaction.dart';
+
 class BlockId {
   final BigInt? id;
 
@@ -51,11 +53,11 @@ class BlockId {
     if (isEarliest) return 'earliest';
     if (isLatest) return 'latest';
     if (isPending) return 'pending';
-    return id!.toString();
+    return '0x' + id!.toRadixString(16);
   }
 }
 
-class Block<T> {
+class Block {
   /// The block number. null if a pending block.
   final BigInt? number;
 
@@ -69,10 +71,10 @@ class Block<T> {
   final BigInt? nonce;
 
   /// SHA3 of the uncles data in the block. 32 Bytes long.
-  final Uint8List sha3Uncles;
+  final String sha3Uncles;
 
   /// The bloom filter for the logs of the block. null if a pending block. 256 Bytes.
-  final Uint8List? logsBloom;
+  final String? logsBloom;
 
   /// The root of the transaction trie of the block. 32 Bytes long.
   final String transactionsRoot;
@@ -106,10 +108,12 @@ class Block<T> {
 
   /// Array of transaction objects, or 32 Bytes transaction hashes depending on
   /// the returnTransactionObjects parameter.
-  final List<T> transactions;
+  final List<String>? transactionHashes;
+
+  final List<Transaction>? transactions;
 
   /// Array of uncle hashes.
-  final List uncles;
+  final List<String> uncles;
 
   Block({
     this.number,
@@ -128,9 +132,12 @@ class Block<T> {
     required this.gasLimit,
     required this.gasUsed,
     required this.timestamp,
+    required this.transactionHashes,
     required this.transactions,
     required this.uncles,
   });
+
+  String toString() => 'Block $hash';
 
   static Block fromMap(Map<String, dynamic> map) {
     BigInt? number;
@@ -144,6 +151,23 @@ class Block<T> {
     BigInt? nonce;
     if (map['nonce'] != null) {
       nonce = BigInt.parse(map['nonce']);
+    }
+
+    List<Transaction>? transactions;
+    List<String>? transactionHashes;
+
+    {
+      final txJson = map['transactions'] as List;
+      if (txJson.isNotEmpty) {
+        if (txJson.first is String) {
+          transactionHashes = txJson.cast<String>();
+        } else {
+          transactions = txJson.map((m) => Transaction.fromMap(m)).toList();
+        }
+      } else {
+        transactions = [];
+        transactionHashes = [];
+      }
     }
     return Block(
       number: number,
@@ -163,8 +187,9 @@ class Block<T> {
       gasUsed: BigInt.parse(map['gasUsed']),
       timestamp: DateTime.fromMillisecondsSinceEpoch(
           int.parse(map['timestamp']) * 1000),
-      transactions: [], // TODO transactions,
-      uncles: [], // TODO uncles
+      transactionHashes: transactionHashes,
+      transactions: transactions,
+      uncles: (map['uncles'] as Iterable).cast<String>().toList(),
     );
   }
 }
