@@ -10,6 +10,7 @@ dependencies:
   pedantic: ^1.11.1
   http: 0.13.3
   sha3: ^0.2.0
+  ninja:
 
 dev_dependencies:
   test: ^1.16.0
