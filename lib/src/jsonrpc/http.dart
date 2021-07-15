@@ -4,6 +4,18 @@ import 'dart:io';
 import 'package:http/http.dart';
 import 'package:web3_jsonrpc/src/jsonrpc/models.dart';
 
+class BasicAuth {
+  final String username;
+  final String password;
+  BasicAuth({required this.username, required this.password});
+  String encode() {
+    return base64Encode(utf8.encode('$username:$password'));
+  }
+
+  @override
+  String toString() => encode();
+}
+
 abstract class JRPCClient {
   String get nextId;
   Future<JRPCResponse> callRPC(JRPCRequest req);
@@ -11,12 +23,12 @@ abstract class JRPCClient {
 
 class JRPCHttpClient implements JRPCClient {
   final Uri uri;
-
   late Client client;
+  BasicAuth? basicAuth;
 
   BigInt _id = BigInt.from(0);
 
-  JRPCHttpClient(this.uri, {Client? client}) {
+  JRPCHttpClient(this.uri, {Client? client, this.basicAuth}) {
     this.client = client ?? Client();
   }
 
@@ -29,13 +41,14 @@ class JRPCHttpClient implements JRPCClient {
   @override
   Future<JRPCResponse> callRPC(JRPCRequest req) async {
     final body = json.encode(req.toJson());
-    print(body);
-    final resp = await client.post(uri,
-        headers: {
-          HttpHeaders.contentTypeHeader: 'application/json-rpc',
-          HttpHeaders.acceptHeader: 'application/json-rpc'
-        },
-        body: body);
+    final headers = {
+      HttpHeaders.contentTypeHeader: 'application/json-rpc',
+      HttpHeaders.acceptHeader: 'application/json-rpc'
+    };
+    if (basicAuth != null) {
+      headers[HttpHeaders.authorizationHeader] = 'Basic $basicAuth';
+    }
+    final resp = await client.post(uri, headers: headers, body: body);
     return JRPCResponse.fromMap(json.decode(resp.body));
   }
 }

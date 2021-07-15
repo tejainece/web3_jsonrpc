@@ -35,13 +35,13 @@ class Web3ETH {
     return BigInt.parse(resp.result as String);
   }
 
-  Future<BlockId> getBlockNumber() async {
+  Future<BigInt> getBlockNumber() async {
     final resp = await jrpc
         .callRPC(JRPCRequest(id: jrpc.nextId, method: 'eth_blockNumber'));
     if (resp.error != null) {
       throw resp.error!;
     }
-    return BlockId(BigInt.parse(resp.result as String));
+    return BigInt.parse(resp.result as String);
   }
 
   Future<Block> getBlockByHash(String blockHash) async {
@@ -51,7 +51,6 @@ class Web3ETH {
     if (resp.error != null) {
       throw resp.error!;
     }
-    print(resp.result);
     return Block.fromMap(resp.result as Map<String, dynamic>);
   }
 
@@ -62,7 +61,6 @@ class Web3ETH {
     if (resp.error != null) {
       throw resp.error!;
     }
-    print(resp.result);
     return Block.fromMap(resp.result as Map<String, dynamic>);
   }
 
@@ -73,7 +71,6 @@ class Web3ETH {
     if (resp.error != null) {
       throw resp.error!;
     }
-    print(resp.result);
     return Transaction.fromMap(resp.result as Map<String, dynamic>);
   }
 }
