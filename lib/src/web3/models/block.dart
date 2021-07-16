@@ -55,6 +55,16 @@ class BlockId {
     if (isPending) return 'pending';
     return '0x' + id!.toRadixString(16);
   }
+
+  String toString() {
+    if(id != null) {
+      return id.toString();
+    }
+    if(isLatest) return 'latest';
+    if(isEarliest) return 'earliest';
+    if(isPending) return 'pending';
+    throw Exception('invalid block id');
+  }
 }
 
 class Block {
