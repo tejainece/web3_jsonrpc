@@ -73,6 +73,19 @@ class Web3ETH {
     }
     return Transaction.fromMap(resp.result as Map<String, dynamic>);
   }
+
+  Future<List<Log>> getLogs(LogFilter filter) async {
+    final params = <dynamic>[filter.toJson()];
+    final resp = await jrpc.callRPC(
+        JRPCRequest(id: jrpc.nextId, method: 'eth_getLogs', params: params));
+    if (resp.error != null) {
+      throw resp.error!;
+    }
+    return (resp.result as List)
+        .cast<Map>()
+        .map((e) => Log.fromMap(e))
+        .toList();
+  }
 }
 
 double weiToEther(BigInt wei) {
