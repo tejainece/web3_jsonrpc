@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 class Transaction {
   /// Hash of the transaction. 32 bytes.
   final String hash;

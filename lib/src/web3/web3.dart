@@ -4,6 +4,7 @@ import 'package:http/http.dart';
 import 'package:web3_jsonrpc/src/jsonrpc/http.dart';
 import 'package:web3_jsonrpc/src/jsonrpc/models.dart';
 import 'package:web3_jsonrpc/src/web3/models/transaction.dart';
+import 'package:web3_jsonrpc/src/web3/models/transaction_receipt.dart';
 
 import 'models/models.dart';
 
@@ -64,8 +65,8 @@ class Web3ETH {
     return Block.fromMap(resp.result as Map<String, dynamic>);
   }
 
-  Future<Transaction> getTransactionByHash(String hash) async {
-    final params = <dynamic>[hash];
+  Future<Transaction> getTransactionByHash(String txHash) async {
+    final params = <dynamic>[txHash];
     final resp = await jrpc.callRPC(JRPCRequest(
         id: jrpc.nextId, method: 'eth_getTransactionByHash', params: params));
     if (resp.error != null) {
@@ -85,6 +86,16 @@ class Web3ETH {
         .cast<Map>()
         .map((e) => Log.fromMap(e))
         .toList();
+  }
+
+  Future<TransactionReceipt> getTransactionReceipt(String txhash) async {
+    final params = <dynamic>[txhash];
+    final resp = await jrpc.callRPC(JRPCRequest(
+        id: jrpc.nextId, method: 'eth_getTransactionReceipt', params: params));
+    if (resp.error != null) {
+      throw resp.error!;
+    }
+    return TransactionReceipt.fromMap(resp.result as Map<String, dynamic>);
   }
 }
 

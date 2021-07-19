@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:web3_jsonrpc/web3_jsonrpc.dart';
 
 Future<void> main() async {
