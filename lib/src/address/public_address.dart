@@ -46,3 +46,9 @@ class EtherPublicKey {
         digest.skip(12).map((e) => e.toRadixString(16).padLeft(2, '0')).join();
   }
 }
+
+final _addressRegExp = RegExp(r'^0x[0-9a-fA-F]{40}$');
+
+bool isETHAddress(String address) {
+  return _addressRegExp.hasMatch(address);
+}

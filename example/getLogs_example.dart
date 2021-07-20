@@ -6,5 +6,6 @@ Future<void> main() async {
       blockHash:
           '0xce48cd7522470cc75ff655b20647d572b35018dd12414ac81903b6fb84443173'));
   print(logs);
+  print('------------');
   print(logs.last.toJson());
 }

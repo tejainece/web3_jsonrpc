@@ -56,6 +56,7 @@ class BlockId {
     return '0x' + id!.toRadixString(16);
   }
 
+  @override
   String toString() {
     if(id != null) {
       return id.toString();
@@ -72,7 +73,7 @@ class Block {
   final BigInt? number;
 
   /// Hash of the block. null if a pending block. 32 bytes long.
-  final BigInt? hash;
+  final String? hash;
 
   /// Hash of the parent block. 32 bytes long.
   final BigInt parentHash;
@@ -147,16 +148,13 @@ class Block {
     required this.uncles,
   });
 
+  @override
   String toString() => 'Block $hash';
 
   static Block fromMap(Map<String, dynamic> map) {
     BigInt? number;
     if (map['number'] != null) {
       number = BigInt.parse(map['number']);
-    }
-    BigInt? hash;
-    if (map['hash'] != null) {
-      hash = BigInt.parse(map['hash']);
     }
     BigInt? nonce;
     if (map['nonce'] != null) {
@@ -181,7 +179,7 @@ class Block {
     }
     return Block(
       number: number,
-      hash: hash,
+      hash: map['hash'],
       parentHash: BigInt.parse(map['parentHash']),
       nonce: nonce,
       sha3Uncles: map['sha3Uncles'],
