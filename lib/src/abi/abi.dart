@@ -1,6 +1,8 @@
 import 'package:web3_jsonrpc/src/address/public_address.dart';
 
-abstract class ETHAbiCodec<T> {
+abstract class AbiCodec<T> {
+  const AbiCodec();
+  
   bool isValid(String v) {
     if (v.length != 66) {
       return false;
@@ -12,9 +14,14 @@ abstract class ETHAbiCodec<T> {
   T decode(String inp);
 
   static final regexp = RegExp(r'^0x[0-9a-fA-F]{64}$');
+  static const int256 = IntCodec();
+  static const uint256 = UIntCodec();
+  static const address = ETHAddressCodec();
 }
 
-class IntCode extends ETHAbiCodec<BigInt> {
+class IntCodec extends AbiCodec<BigInt> {
+  const IntCodec();
+  
   @override
   String encode(BigInt v) {
     if (v.isNegative) {
@@ -48,7 +55,9 @@ class IntCode extends ETHAbiCodec<BigInt> {
   static final maxPositiveInteger = signBit - BigInt.one;
 }
 
-class UIntCode extends ETHAbiCodec<BigInt> {
+class UIntCodec extends AbiCodec<BigInt> {
+  const UIntCodec();
+
   @override
   String encode(BigInt v) {
     if (v.isNegative) {
@@ -74,7 +83,9 @@ class UIntCode extends ETHAbiCodec<BigInt> {
   static final maxPositiveInteger = (BigInt.one << 256) - BigInt.one;
 }
 
-class ETHAddressCodec extends ETHAbiCodec<String> {
+class ETHAddressCodec extends AbiCodec<String> {
+  const ETHAddressCodec();
+  
   @override
   String encode(String v) {
     if (!isETHAddress(v)) {
