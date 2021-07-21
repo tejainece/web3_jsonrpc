@@ -40,7 +40,7 @@ class IntCodec extends AbiCodec<BigInt> {
 
   @override
   BigInt decode(String inp) {
-    if (isValid(inp)) {
+    if (!isValid(inp)) {
       throw ArgumentError.value(inp, 'inp', 'invalid ABI encoding');
     }
     var v = BigInt.parse(inp);
@@ -73,7 +73,7 @@ class UIntCodec extends AbiCodec<BigInt> {
 
   @override
   BigInt decode(String inp) {
-    if (isValid(inp)) {
+    if (!isValid(inp)) {
       throw ArgumentError.value(inp, 'inp', 'invalid ABI encoding');
     }
     var v = BigInt.parse(inp);
@@ -97,7 +97,7 @@ class ETHAddressCodec extends AbiCodec<String> {
 
   @override
   String decode(String inp) {
-    if (isValid(inp)) {
+    if (!isValid(inp)) {
       throw ArgumentError.value(inp, 'inp', 'invalid ABI encoding');
     }
     return '0x' + inp.substring(26);

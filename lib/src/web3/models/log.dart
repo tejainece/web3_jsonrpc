@@ -77,7 +77,7 @@ class Log extends PendingLog {
   }
 
   @override
-  String toString() => 'Log $address $topics';
+  String toString() => 'Log $transactionHash $logIndex $address $topics';
 }
 
 class LogFilter {
