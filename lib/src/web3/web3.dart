@@ -62,6 +62,9 @@ class Web3ETH {
     if (resp.error != null) {
       throw resp.error!;
     }
+    if(resp.result == null) {
+      throw Exception('server has not synchronized yet');
+    }
     return Block.fromMap(resp.result as Map<String, dynamic>);
   }
 
